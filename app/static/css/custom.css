@@ -1,0 +1,37 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.jumbotron {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-group form {
+    display: inline-block;
+}
+
+.table-responsive {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 0.25rem;
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid #dee2e6;
+}

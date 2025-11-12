@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Add Grade for {{ student.name }} - Student Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1 class="mb-4">Add Grade for {{ student.name }}</h1>
+        
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                {{ form.student_id.label(class="form-label") }}
+                {{ form.student_id(class="form-control", readonly=true, disabled=true) }}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.subject.label(class="form-label") }}
+                {{ form.subject(class="form-control" + (" is-invalid" if form.subject.errors else ""), placeholder="e.g., Mathematics, English, Science") }}
+                {% if form.subject.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.subject.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.score.label(class="form-label") }}
+                {{ form.score(class="form-control" + (" is-invalid" if form.score.errors else ""), placeholder="0-100") }}
+                {% if form.score.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.score.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="form-text">Enter a score between 0 and 100.</div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('grades.list_grades', student_id=student.id) }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

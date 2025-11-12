@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Student Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Student Management System</h1>
+            <p class="lead">Manage students, grades, and view rankings all in one place.</p>
+            <hr class="my-4">
+            <p>Get started by managing students or viewing the current rankings.</p>
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary btn-lg" href="{{ url_for('students.list_students') }}" role="button">View Students</a>
+                <a class="btn btn-success btn-lg" href="{{ url_for('students.create_student') }}" role="button">Add Student</a>
+                <a class="btn btn-info btn-lg" href="{{ url_for('students.rankings') }}" role="button">View Rankings</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Student Management</h5>
+                <p class="card-text">Create, update, and delete student records.</p>
+                <a href="{{ url_for('students.list_students') }}" class="btn btn-primary">Manage Students</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Grade Tracking</h5>
+                <p class="card-text">Add and manage grades for each student.</p>
+                <a href="{{ url_for('students.list_students') }}" class="btn btn-primary">Manage Grades</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Rankings & Export</h5>
+                <p class="card-text">View student rankings and export data to CSV.</p>
+                <a href="{{ url_for('students.rankings') }}" class="btn btn-primary">View Rankings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
