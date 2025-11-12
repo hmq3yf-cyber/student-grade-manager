@@ -110,29 +110,232 @@ gunicorn -w 4 -b 0.0.0.0:5000 'app:create_app()'
 
 ## Command-Line Interface (CLI)
 
-The application includes a CLI for interacting with the database.
+The application includes a comprehensive CLI for managing students and grades from the command line. The CLI provides commands for CRUD operations, rankings, and data export.
 
-### Available Commands
+### Running CLI Commands
 
-You can use the CLI either with the launcher script or directly with Python:
+#### Using the launcher script (recommended):
+```bash
+./cli.sh <command> [options]
+```
 
-**Using the launcher script (recommended):**
+#### Or directly with Python:
+```bash
+PYTHONPATH=/home/engine/project python cli/commands.py <command> [options]
+```
+
+### Global Options
+
+- `--db PATH`: Specify a custom database file path (optional)
+  - Example: `./cli.sh --db ./custom.db add-student --name "John" --email "john@example.com"`
+
+### Student Commands
+
+#### Add a Student
 ```bash
 ./cli.sh add-student --name "John Doe" --email "john@example.com"
+```
+Creates a new student record. Email must be unique.
+
+**Options:**
+- `--name TEXT`: Student name (prompted if not provided)
+- `--email TEXT`: Student email (prompted if not provided)
+
+**Exit Codes:**
+- `0`: Success
+- `1`: Error (duplicate email, invalid input, etc.)
+
+#### List Students
+```bash
 ./cli.sh list-students
+./cli.sh list-students --student-id 1
+```
+Displays all students (or specific student) in a table format with ID, name, email, average grade, and grade count.
+
+**Options:**
+- `--student-id INTEGER`: Show only a specific student (optional)
+
+#### Edit a Student
+```bash
+./cli.sh edit-student --student-id 1 --name "Jane Doe"
+./cli.sh edit-student --student-id 1 --email "jane.doe@example.com"
+./cli.sh edit-student --student-id 1 --name "Jane Doe" --email "jane@example.com"
+```
+Updates student name and/or email. If a field is not provided, it keeps the current value.
+
+**Options:**
+- `--student-id INTEGER`: Student ID to edit (required)
+- `--name TEXT`: New name (optional)
+- `--email TEXT`: New email (optional)
+
+**Exit Codes:**
+- `0`: Success
+- `1`: Student not found, duplicate email, etc.
+
+#### Delete a Student
+```bash
+./cli.sh delete-student --student-id 1
+./cli.sh delete-student --student-id 1 --confirm
+```
+Deletes a student and all associated grades. Without `--confirm`, prompts for confirmation.
+
+**Options:**
+- `--student-id INTEGER`: Student ID to delete (required)
+- `--confirm`: Skip confirmation prompt (optional)
+
+**Exit Codes:**
+- `0`: Success or deletion cancelled
+- `1`: Student not found
+
+### Grade Commands
+
+#### Add a Grade
+```bash
 ./cli.sh add-grade --student-id 1 --subject "Math" --score 85
+./cli.sh add-grade --student-id 1 --subject "English" --score 92.5
+```
+Records a grade for a student. Score must be between 0 and 100.
+
+**Options:**
+- `--student-id INTEGER`: Student ID (required)
+- `--subject TEXT`: Subject name (prompted if not provided)
+- `--score FLOAT`: Grade score 0-100 (prompted if not provided)
+
+**Exit Codes:**
+- `0`: Success
+- `1`: Student not found, invalid score, etc.
+
+#### List Grades
+```bash
+./cli.sh list-grades
+./cli.sh list-grades --student-id 1
+```
+Displays all grades or grades for a specific student in a table format.
+
+**Options:**
+- `--student-id INTEGER`: Show only grades for specific student (optional)
+
+#### Edit a Grade
+```bash
+./cli.sh edit-grade --grade-id 1 --score 95
+./cli.sh edit-grade --grade-id 1 --subject "Advanced Math" --score 95
+```
+Updates a grade's subject and/or score. If a field is not provided, it keeps the current value.
+
+**Options:**
+- `--grade-id INTEGER`: Grade ID to edit (required)
+- `--subject TEXT`: New subject (optional)
+- `--score FLOAT`: New score 0-100 (optional)
+
+**Exit Codes:**
+- `0`: Success
+- `1`: Grade not found, invalid score, etc.
+
+#### Delete a Grade
+```bash
+./cli.sh delete-grade --grade-id 1
+./cli.sh delete-grade --grade-id 1 --confirm
+```
+Deletes a grade record. Without `--confirm`, prompts for confirmation.
+
+**Options:**
+- `--grade-id INTEGER`: Grade ID to delete (required)
+- `--confirm`: Skip confirmation prompt (optional)
+
+**Exit Codes:**
+- `0`: Success or deletion cancelled
+- `1`: Grade not found
+
+### Rankings and Analytics
+
+#### View Rankings
+```bash
 ./cli.sh rankings
-./cli.sh export-students --output students.csv
+```
+Displays student rankings sorted by average grade with medals for top 3 students.
+
+**Output includes:**
+- Rank (with medal 🥇🥈🥉 for top 3)
+- Student name and email
+- Average grade
+- Number of grades
+
+### Data Export
+
+#### Export Students to CSV
+```bash
+./cli.sh export-students
+./cli.sh export-students --output my_students.csv
+```
+Exports student data with averages to a CSV file.
+
+**Options:**
+- `--output TEXT`: Output filename (default: `students.csv`)
+
+**CSV Columns:** ID, Name, Email, Average Grade, Number of Grades
+
+#### Export Grades to CSV
+```bash
+./cli.sh export-grades
+./cli.sh export-grades --output my_grades.csv
+```
+Exports grade records to a CSV file.
+
+**Options:**
+- `--output TEXT`: Output filename (default: `grades.csv`)
+
+**CSV Columns:** Grade ID, Student Name, Subject, Score, Date
+
+### Usage Examples
+
+#### Complete Workflow
+```bash
+# Add students
+./cli.sh add-student --name "Alice Smith" --email "alice@example.com"
+./cli.sh add-student --name "Bob Johnson" --email "bob@example.com"
+
+# List students
+./cli.sh list-students
+
+# Add grades
+./cli.sh add-grade --student-id 1 --subject "Math" --score 95
+./cli.sh add-grade --student-id 1 --subject "English" --score 87
+./cli.sh add-grade --student-id 2 --subject "Math" --score 78
+./cli.sh add-grade --student-id 2 --subject "English" --score 92
+
+# View grades for a student
+./cli.sh list-grades --student-id 1
+
+# View rankings
+./cli.sh rankings
+
+# Export data
+./cli.sh export-students --output results.csv
+./cli.sh export-grades --output grades.csv
 ```
 
-**Or directly with Python:**
+#### Using a Custom Database
 ```bash
-PYTHONPATH=/home/engine/project python cli/commands.py add-student --name "John Doe" --email "john@example.com"
-PYTHONPATH=/home/engine/project python cli/commands.py list-students
-PYTHONPATH=/home/engine/project python cli/commands.py add-grade --student-id 1 --subject "Math" --score 85
-PYTHONPATH=/home/engine/project python cli/commands.py rankings
-PYTHONPATH=/home/engine/project python cli/commands.py export-students --output students.csv
+# Create students in a custom database
+./cli.sh --db /tmp/students_test.db add-student --name "Test User" --email "test@example.com"
+
+# View students in custom database
+./cli.sh --db /tmp/students_test.db list-students
+
+# Export from custom database
+./cli.sh --db /tmp/students_test.db export-students --output test_results.csv
 ```
+
+### Error Handling
+
+The CLI provides clear error messages for:
+- Missing required parameters
+- Invalid input (e.g., scores outside 0-100 range)
+- Non-existent records (student not found, grade not found)
+- Duplicate emails
+- Invalid database paths
+
+All error messages are printed to stderr with appropriate exit code 1 for easy integration with scripts.
 
 ## Database
 

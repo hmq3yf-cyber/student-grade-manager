@@ -1,11 +1,13 @@
 from flask import Flask
-from app.config import config
+from app.config import config, create_config_with_db
 from app.models import db
 
 
-def create_app(config_name='default'):
+def create_app(config_name='default', db_path=None):
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
+    
+    config_obj = create_config_with_db(config_name, db_path=db_path)
+    app.config.from_object(config_obj)
     
     db.init_app(app)
     
